@@ -1,30 +1,36 @@
 package main
 
 import (
-	"github.com/docopt/docopt-go"
-	"github.com/pkg/errors"
-	"github.com/weblair/lair/generator"
-	"os"
+	"fmt"
+	"github.com/spf13/viper"
+
+	"github.com/weblair/lair/cmd"
+	_ "github.com/weblair/lair/config"
 )
 
-const VERSION = "Lair 0.1.0"
-const USAGE = `Lair
+// BaseVersion is the SemVer-formatted string that defines the current version of Lair.
+// Build information will be added at compile-time.
+const BaseVersion = "0.1.0-develop"
 
-Usage:
-  lair new <owner> <project_name>
+// BuildTime is a timestamp of when the build is run. This variable is set at compile-time.
+var BuildTime string
 
-Options:
-  -h --help   Show this screen.
-  --version   Show version.
-`
+// GitRevision is the current Git commit ID. If the tree is dirty at compile-time, an "x-" is prepended to the hash.
+// This variable is set at compile-time.
+var GitRevision string
+
+// GitBranch is the name of the active Git branch at compile-time. This variable is set at compile-time.
+var GitBranch string
 
 func main() {
-	args, err := docopt.Parse(USAGE, os.Args[1:], true, VERSION, false)
-	if err != nil {
-		panic(errors.WithMessage(err, "failed to parse doc"))
-	}
+	version := fmt.Sprintf(
+		"%s+%s.%s.%s",
+		BaseVersion,
+		GitBranch,
+		GitRevision,
+		BuildTime,
+	)
+	viper.Set("VERSION", version)
 
-	if args["new"].(bool) {
-		generator.NewGinProject(args["<owner>"].(string), args["<project_name>"].(string))
-	}
+	cmd.Execute()
 }

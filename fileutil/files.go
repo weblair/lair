@@ -1,7 +1,8 @@
-package generator
+package fileutil
 
 import (
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -17,7 +18,7 @@ type FileData struct {
 // DirectoryData defines fields needed by the generator for creating a directory.
 type DirectoryData struct {
 	Dirname string
-	Empty bool
+	Empty   bool
 }
 
 // createFileContents substitutes the owner and projectName into the template string.
@@ -39,7 +40,9 @@ func GitAddFile(filename string) error {
 // MustGitAddFile wraps GitAddFile and panics if GitAddFile returns an error.
 func MustGitAddFile(filename string) {
 	if err := GitAddFile(filename); err != nil {
-		panic(errors.WithStack(err))
+		logrus.WithFields(logrus.Fields{
+			"error": err,
+		}).Panic("Git add file failed")
 	}
 }
 
@@ -48,7 +51,7 @@ func MustGitAddFile(filename string) {
 func CreateAndAddFile(filename string, template string, owner string, projectName string) error {
 	contents := createFileContents(template, owner, projectName)
 
-	if err := ioutil.WriteFile(filename, []byte(contents), 0644); err != nil {
+	if err := ioutil.WriteFile(filename, []byte(contents), 0664); err != nil {
 		return errors.WithMessagef(err, "failed to create file %s", filename)
 	}
 
@@ -63,19 +66,19 @@ func CreateAndAddFile(filename string, template string, owner string, projectNam
 // file and add the directory to Git. Otherwise this function will assume that the directory will be added to Git later
 // after it has been populated or that the user does not wish to add this directory to Git.
 func CreateAndAddDirectory(dirname string, empty bool) error {
-	if err := os.Mkdir(dirname, 0755); err != nil {
+	if err := os.Mkdir(dirname, 0775); err != nil {
 		return errors.WithMessagef(err, "failed to create directory %s", dirname)
 	}
 
 	if empty {
-		f, err := os.Create(dirname+"/.gitkeep")
+		f, err := os.Create(dirname + "/.gitkeep")
 		if err != nil {
 			return errors.WithMessagef(err, "failed to create .gitkeep for %s/", dirname)
 		}
 		if err := f.Close(); err != nil {
 			return errors.WithMessagef(err, "failed to create .gitkeep for %s/", dirname)
 		}
-		if err := GitAddFile(dirname+"/.gitkeep"); err != nil {
+		if err := GitAddFile(dirname + "/.gitkeep"); err != nil {
 			return errors.WithMessagef(err, "failed to add %s/ to Git", dirname)
 		}
 	}
@@ -86,7 +89,14 @@ func CreateAndAddDirectory(dirname string, empty bool) error {
 // CreateAndAddFileList iterates over the given FileData, executing CreateAndAddFile for each one.
 func CreateAndAddFileList(files []FileData, owner string, projectName string) (e []error) {
 	for _, v := range files {
+		logrus.WithFields(logrus.Fields{
+			"file": v.Filename,
+		}).Info("Creating file.")
 		if err := CreateAndAddFile(v.Filename, v.Template, owner, projectName); err != nil {
+			logrus.WithFields(logrus.Fields{
+				"file":  v,
+				"error": err,
+			}).Error("Failed to create file.")
 			e = append(e, errors.WithStack(err))
 		}
 	}
@@ -97,7 +107,14 @@ func CreateAndAddFileList(files []FileData, owner string, projectName string) (e
 // CreateAndAddDirectoryList iterates over the given DirectoryData, executing CreateAndAddDirectory for each one.
 func CreateAndAddDirectoryList(dirs []DirectoryData) (e []error) {
 	for _, v := range dirs {
+		logrus.WithFields(logrus.Fields{
+			"directory": v.Dirname,
+		}).Info("Creating directory.")
 		if err := CreateAndAddDirectory(v.Dirname, v.Empty); err != nil {
+			logrus.WithFields(logrus.Fields{
+				"directory": v,
+				"error":     err,
+			}).Error("Failed to create directory.")
 			e = append(e, errors.WithStack(err))
 		}
 	}

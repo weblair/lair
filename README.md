@@ -8,12 +8,18 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
   - Go 1.12.5 (or later)
+  - [Codegansta's Gin](go get github.com/codegangsta/gin)
   - [Dep](https://github.com/golang/dep)
   - [Migrate](https://github.com/golang-migrate/migrate)
 
 ### Installing
   1. `git clone git@github.com:weblair/lair.git`
-  2. `go run main.go`
+  2. `go build`
+  3. `cp lair $GOPATH/bin/`
+  
+After the initial install---and assuming you have GNU Make---you can use the included Makefile to build and deploy code
+changes to $GOPATH/bin. This will use Lair's `build version --increment` tool to increment the build number in the
+VERSION string. You can check your update was installed by running `weblair --version`.
 
 ## Running the tests
 
@@ -47,7 +53,7 @@ Add additional notes about how to deploy this on a live system
 Before committing, be sure to:
  1. Use [Git Flow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow)
  2. [Sign your commits](https://git-scm.com/book/ms/v2/Git-Tools-Signing-Your-Work)
- 3. Run `gofmt -s\'
+ 3. Run `gofmt -s -w .\'
 
 ## Versioning
 
@@ -65,6 +71,6 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+* [PurpleBooth](https://github.com/PurpleBooth) for the README template
+* [Commissure](https://github.com/commissure) for the build metadata Makefile
+* The GitHub team for the [gitignore](https://github.com/github/gitignore) template

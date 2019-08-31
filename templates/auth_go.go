@@ -1,0 +1,4 @@
+package templates
+
+const AuthGo = `
+`
