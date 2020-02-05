@@ -5,12 +5,49 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/subosito/gotenv"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
 	"os"
 	"os/user"
+	"strings"
 )
 
-// TODO: Don't create DB_*, GIN_MODE, or LAIR_ENV variables in a new root config.
-// TODO: Use uppercase keys when creating the root config file.
+// formattedConfigMap returns the Viper settings with the keys in uppercase.
+// Viper treats all keys as lower-case keys. This means that when a config file is written, the keys will always be
+// lowercase. As a matter of style, I prefer my keys to be uppercase, hence this and the writeRootConfig functions
+// instead of the baked-in Viper write functions.
+func formattedConfigMap() map[string]interface{} {
+	keys := viper.AllKeys()
+	config := viper.AllSettings()
+
+	f := make(map[string]interface{})
+	for _, key := range keys {
+		f[strings.ToUpper(key)] = config[key]
+	}
+
+	return f
+}
+
+// writeRootConfig writes the Viper settings to lairrc.yml with the keys in uppercase.
+// Viper treats all keys as lower-case keys. This means that when a config file is written, the keys will always be
+// lowercase. As a matter of style, I prefer my keys to be uppercase, hence this and the writeRootConfig functions
+// instead of the baked-in Viper write functions.
+func writeRootConfig(homeDir string) error {
+	config := formattedConfigMap()
+
+	b, err := yaml.Marshal(config)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	err = ioutil.WriteFile(homeDir+"/.lair/lairrc.yml", b, 0600)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	return nil
+}
+
 func createRootConfig(homeDir string) error {
 	logrus.Info("Creating .lair directory")
 	if err := os.MkdirAll(homeDir+"/.lair/", 0755); err != nil {
@@ -18,7 +55,7 @@ func createRootConfig(homeDir string) error {
 	}
 
 	logrus.Info("Creating root config")
-	if err := viper.WriteConfigAs(homeDir + "/.lair/lairrc.yml"); err != nil {
+	if err := writeRootConfig(homeDir); err != nil {
 		return errors.WithMessage(err, "failed to create root configuration file")
 	}
 
@@ -38,6 +75,7 @@ func initRootConfig() error {
 	viper.SetDefault("ROOT_DB_PASSWORD", "postgres")
 	viper.SetDefault("GITHUB_USER", "weblair")
 	viper.SetDefault("COPYRIGHT", "Robert Hawk")
+	viper.SetDefault("DOTENV_KEYS", []string{"JWT_KEY", "GIN_MODE", "LAIR_ENV"})
 
 	viper.AddConfigPath(u.HomeDir + "/.lair/")
 	viper.SetConfigName("lairrc")

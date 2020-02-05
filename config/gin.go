@@ -37,6 +37,11 @@ func readCurrentDotEnv() (map[string]string, error) {
 	return values, nil
 }
 
+// TODO: Copy config values from the config that match the DOTENV_KEYS list
+func makeDotEnvMap(values *map[string]string) (*map[string]string, error) {
+	return values, nil
+}
+
 func writeDotEnvFile(values map[string]string) error {
 	contents := ""
 	for k, v := range values {
@@ -53,7 +58,7 @@ func writeDotEnvFile(values map[string]string) error {
 
 // CreateHMACKey creates a cryptographically secure random value for use by JWT generators.
 func CreateHMACKey() (string, error) {
-	b := make([]byte, 32)
+	b := make([]byte, 64)
 	_, err := rand.Read(b)
 	if err != nil {
 		return "", errors.WithStack(err)
@@ -73,7 +78,7 @@ func CreateGinDotEnv() {
 	if err != nil {
 		panic(err)
 	}
-	values["JWT_SECRET"] = key
+	values["JWT_KEY"] = key
 
 	err = writeDotEnvFile(values)
 	if err != nil {
