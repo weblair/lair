@@ -14,9 +14,9 @@ lair: main.go $(foreach f, $(SRC), $(f).go)
 
 .PHONY: install
 install: lair
-	rm ${GOPATH}/bin/lair
+	-@rm ${GOPATH}/bin/lair || true
 	cp lair ${GOPATH}/bin/
 
 .PHONY: clean
 clean:
-	rm lair
+	-rm lair
