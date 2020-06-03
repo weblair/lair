@@ -103,7 +103,7 @@ func initLogging() error {
 	//	- info
 	//	- debug
 	//	- trace
-	loglevel, err := logrus.ParseLevel(viper.GetString("ROOT_LOGLEVEL"))
+	loglevel, err := logrus.ParseLevel(viper.GetString("LAIR_LOGLEVEL"))
 	// TODO: Review error handling for initLogging
 	if err != nil {
 		return errors.WithStack(err)
