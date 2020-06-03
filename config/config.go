@@ -1,15 +1,16 @@
 package config
 
 import (
+	"io/ioutil"
+	"os"
+	"os/user"
+	"strings"
+
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/subosito/gotenv"
 	"gopkg.in/yaml.v2"
-	"io/ioutil"
-	"os"
-	"os/user"
-	"strings"
 )
 
 // formattedConfigMap returns the Viper settings with the keys in uppercase.
@@ -68,14 +69,11 @@ func initRootConfig() error {
 		return errors.WithMessage(err, "failed to get current user")
 	}
 
-	viper.SetDefault("ROOT_LOGLEVEL", "info")
+	viper.SetDefault("LAIR_LOGLEVEL", "info")
 	viper.SetDefault("ROOT_DB_HOST", "localhost")
 	viper.SetDefault("ROOT_DB_USER", "postgres")
 	viper.SetDefault("ROOT_DB_NAME", "postgres")
 	viper.SetDefault("ROOT_DB_PASSWORD", "postgres")
-	viper.SetDefault("GITHUB_USER", "weblair")
-	viper.SetDefault("COPYRIGHT", "Robert Hawk")
-	viper.SetDefault("DOTENV_KEYS", []string{"JWT_KEY", "GIN_MODE", "LAIR_ENV"})
 
 	viper.AddConfigPath(u.HomeDir + "/.lair/")
 	viper.SetConfigName("lairrc")
@@ -119,8 +117,6 @@ func initLogging() error {
 // LoadEnvConfig will load the given environment from its corresponding YAML config file.
 // Use this to override the default environment that is loaded from the .env file.
 func LoadEnvConfig(env string) {
-	viper.SetDefault("GIN_MODE", "debug")
-	viper.SetDefault("LAIR_ENV", "development")
 	viper.SetDefault("DB_HOST", "localhost")
 	viper.SetDefault("DB_USER", "postgres")
 	viper.SetDefault("DB_NAME", "")
@@ -130,12 +126,12 @@ func LoadEnvConfig(env string) {
 	viper.AutomaticEnv()
 
 	viper.AddConfigPath("./config")
-	viper.SetConfigName(viper.GetString("LAIR_ENV"))
+	viper.SetConfigName(env)
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
 			logrus.WithFields(logrus.Fields{
-				"environment": viper.GetString("LAIR_ENV"),
+				"environment": env,
 				"error":       errors.WithStack(err),
 			}).Fatal("Failed to read configuration file.")
 		}

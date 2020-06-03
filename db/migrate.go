@@ -2,6 +2,10 @@ package db
 
 import (
 	"fmt"
+	"io/ioutil"
+	"strconv"
+	"strings"
+
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
@@ -9,10 +13,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"github.com/weblair/lair/fileutil"
-	"io/ioutil"
-	"strconv"
-	"strings"
 )
 
 func newMigration() (*migrate.Migrate, error) {
@@ -61,7 +61,7 @@ func CreateNewMigrationFile(desc string) {
 			"current_version":       current,
 			"next_version":          current + 1,
 			"latest_migration_file": f[len(f)-1],
-		}).Warn("Latest migration file found.")
+		}).Info("Latest migration file found.")
 	}
 
 	// Reformat the description so it is lower case and spaces are replaced with underscores
@@ -75,7 +75,7 @@ func CreateNewMigrationFile(desc string) {
 	logrus.WithFields(logrus.Fields{
 		"filename": down,
 	}).Info("Creating down migration.")
-	if err := fileutil.CreateAndAddFile(down, "", "", ""); err != nil {
+	if err := ioutil.WriteFile(down, []byte{}, 0664); err != nil {
 		logrus.WithFields(logrus.Fields{
 			"error": errors.WithStack(err),
 		}).Fatal("Failed to create down migration.")
@@ -84,10 +84,10 @@ func CreateNewMigrationFile(desc string) {
 	logrus.WithFields(logrus.Fields{
 		"filename": up,
 	}).Info("Creating up migration.")
-	if err := fileutil.CreateAndAddFile(up, "", "", ""); err != nil {
+	if err := ioutil.WriteFile(up, []byte{}, 0664); err != nil {
 		logrus.WithFields(logrus.Fields{
 			"error": errors.WithStack(err),
-		}).Fatal("Failed to create down migration.")
+		}).Fatal("Failed to create up migration.")
 	}
 }
 
@@ -118,7 +118,7 @@ func MigrateDatabase(steps int) {
 	migration, err := newMigration()
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
-			"environment": viper.GetString("LAIR_ENV"),
+			"database": viper.GetString("DB_NAME"),
 			"steps":       steps,
 			"error":       errors.WithStack(err),
 		}).Fatal("Failed to create a new migration.")
@@ -128,23 +128,23 @@ func MigrateDatabase(steps int) {
 	// FIXME: No migration files should not cause a fatal error
 	if steps == 0 {
 		logrus.WithFields(logrus.Fields{
-			"environment": viper.GetString("LAIR_ENV"),
+			"database": viper.GetString("DB_NAME"),
 		}).Info("Migrating database to latest version.")
 		if err := migration.Up(); err != nil {
 			logrus.WithFields(logrus.Fields{
-				"environment": viper.GetString("LAIR_ENV"),
+				"database": viper.GetString("DB_NAME"),
 				"steps":       steps,
 				"error":       errors.WithStack(err),
 			}).Fatal("Database migration failed.")
 		}
 	} else {
 		logrus.WithFields(logrus.Fields{
-			"environment": viper.GetString("LAIR_ENV"),
+			"database": viper.GetString("DB_NAME"),
 			"steps":       steps,
 		}).Info("Performing step-wise migration on database.")
 		if err := migration.Steps(steps); err != nil {
 			logrus.WithFields(logrus.Fields{
-				"environment": viper.GetString("LAIR_ENV"),
+				"database": viper.GetString("DB_NAME"),
 				"steps":       steps,
 				"error":       errors.WithStack(err),
 			}).Fatal("Database migration failed.")

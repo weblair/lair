@@ -71,13 +71,11 @@ func DropDatabaseWithName(name string) error {
 func DropDatabaseFromConfig() {
 	logrus.WithFields(logrus.Fields{
 		"database":    viper.GetString("DB_NAME"),
-		"environment": viper.GetString("LAIR_ENV"),
 	}).Debug("Will create database from environment config.")
 	if err := DropDatabaseWithName(viper.GetString("DB_NAME")); err != nil {
 		if strings.Contains(err.Error(), "does not exist") {
 			logrus.WithFields(logrus.Fields{
 				"database":    viper.GetString("DB_NAME"),
-				"environment": viper.GetString("LAIR_ENV"),
 			}).Warn("Not dropping database because it does not exist.")
 		} else {
 			logrus.WithFields(logrus.Fields{

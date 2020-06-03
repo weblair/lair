@@ -1,4 +1,0 @@
-package templates
-
-const AuthGo = `
-`
