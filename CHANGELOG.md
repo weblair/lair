@@ -18,6 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## 0.3.1
+
+### Fixed
+- Now reading the loglevel from the correct config key
+
 ## 0.3.0
 
 ### Changed
