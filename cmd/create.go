@@ -20,7 +20,7 @@ var createCmd = &cobra.Command{
 		db.CreateDatabaseFromConfig(forceCreate)
 		if createAndSeed {
 			db.MigrateDatabase(0)
-			db.SeedDatabase()
+			db.SeedDatabase(environment)
 		}
 	},
 }

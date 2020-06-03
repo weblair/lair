@@ -19,7 +19,7 @@ var resetCmd = &cobra.Command{
 		db.CreateDatabaseFromConfig(true)
 		db.MigrateDatabase(0)
 		if resetAndSeed {
-			db.SeedDatabase()
+			db.SeedDatabase(environment)
 		}
 	},
 }
