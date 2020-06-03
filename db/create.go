@@ -11,7 +11,7 @@ import (
 // TODO: Add debug logging to create.go
 
 // CreateDatabaseWithName will create a new Postgres database with the given name.
-// This function assumes the following:
+// This function assumes the following: <-- OUTDATED
 //   1. That the postgres user exists
 //   2. That the postgres database exists
 //   3. That Postgres is configured to accept local connections with the 'password' method
@@ -58,7 +58,6 @@ func CreateDatabaseFromConfig(force bool) {
 		if strings.Contains(err.Error(), "already exists") {
 			logrus.WithFields(logrus.Fields{
 				"database":    viper.GetString("DB_NAME"),
-				"environment": viper.GetString("LAIR_ENV"),
 			}).Warn("Skipping creation of database that already exists.")
 		} else {
 			logrus.WithFields(logrus.Fields{

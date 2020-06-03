@@ -2,16 +2,18 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"os"
+
+	"github.com/spf13/cobra"
 )
 
-var cfgFile string
+// environment represents the config that Lair should use when connecting to the database.
+var environment string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "lair",
-	Short: "Template generator for Gin-gonic projects",
+	Short: "Database migration tool for Weblair projects",
 	Long:  ``,
 }
 
@@ -22,4 +24,14 @@ func Execute() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func init() {
+	rootCmd.PersistentFlags().StringVarP(
+		&environment,
+		"env",
+		"e",
+		"development",
+		"Use the given environment's database configs",
+	)
 }

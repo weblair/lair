@@ -6,7 +6,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/romanyx/polluter"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 	"golang.org/x/crypto/bcrypt"
 	"io/ioutil"
 	"regexp"
@@ -53,26 +52,26 @@ func processMacros(raw []byte) string {
 }
 
 // SeedDatabase parses the seed YAML file for the given environment and populates the associated database.
-func SeedDatabase() {
+func SeedDatabase(env string) {
 	db, err := NewConnectionFromConfig()
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
-			"environment": viper.GetString("LAIR_ENV"),
+			"environment": env,
 			"error":       errors.WithStack(err),
 		}).Fatal("Failed to create connection to database.")
 	}
 
 	logrus.WithFields(logrus.Fields{
-		"environment": viper.GetString("LAIR_ENV"),
+		"environment": env,
 	}).Info("Reading seed data for environment.")
 
 	p := polluter.New(polluter.PostgresEngine(db))
-	data := fmt.Sprintf("db/seed/%s.yml", viper.GetString("LAIR_ENV"))
+	data := fmt.Sprintf("db/seed/%s.yml", env)
 
 	raw, err := ioutil.ReadFile(data)
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
-			"environment": viper.GetString("LAIR_ENV"),
+			"environment": env,
 			"filename":    data,
 			"error":       err,
 		}).Fatal("Failed to open seed data file.")
@@ -80,18 +79,18 @@ func SeedDatabase() {
 	processed := processMacros(raw)
 
 	logrus.WithFields(logrus.Fields{
-		"environment": viper.GetString("LAIR_ENV"),
+		"environment": env,
 		"filename":    data,
 	}).Info("Loading seed data into database.")
 	if err := p.Pollute(strings.NewReader(processed)); err != nil {
 		logrus.WithFields(logrus.Fields{
-			"environment": viper.GetString("LAIR_ENV"),
+			"environment": env,
 			"filename":    data,
 			"error":       err,
 		}).Fatal("Failed to load seed data into the database.")
 	}
 	logrus.WithFields(logrus.Fields{
-		"environment": viper.GetString("LAIR_ENV"),
+		"environment": env,
 		"filename":    data,
 	}).Info("Database seeding complete.")
 }

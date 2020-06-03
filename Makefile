@@ -10,13 +10,14 @@ GIT_DIRTY = `git diff-index --quiet HEAD -- || echo 'x-'`
 LDFLAGS = -ldflags "-s -X main.BuildTime=${BUILD_TIME} -X main.GitRevision=${GIT_DIRTY}${GIT_REVISION} -X main.GitBranch=${GIT_BRANCH}"
 
 lair: main.go $(foreach f, $(SRC), $(f).go)
-	go build ${LDFLAGS}
+	-@mkdir ./bin || true
+	go build ${LDFLAGS} -o ./bin/lair
 
 .PHONY: install
 install: lair
 	-@rm ${GOPATH}/bin/lair || true
-	cp lair ${GOPATH}/bin/
+	cp ./bin/lair ${GOPATH}/bin/
 
 .PHONY: clean
 clean:
-	-rm lair
+	-rm ./bin/lair
