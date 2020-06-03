@@ -1,63 +1,48 @@
 # Lair
 
-One Paragraph of project description goes here
-
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-
 ### Prerequisites
-  - Go 1.12.5 (or later)
-  - [Codegansta's Gin](go get github.com/codegangsta/gin)
-  - [Dep](https://github.com/golang/dep)
-  - [Migrate](https://github.com/golang-migrate/migrate)
+  - Go 1.14.2 (or later)
+  - GNU Make
 
 ### Installing
   1. `git clone git@github.com:weblair/lair.git`
-  2. `go build`
-  3. `cp lair $GOPATH/bin/`
+  2. `make`
+  3. `make install`
   
-After the initial install---and assuming you have GNU Make---you can use the included Makefile to build and deploy code
-changes to $GOPATH/bin. This will use Lair's `build version --increment` tool to increment the build number in the
-VERSION string. You can check your update was installed by running `weblair --version`.
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
 ## Built With
 
 * [Migrate](https://github.com/golang-migrate/migrate) - Database Migrations
 
-## Contributing
+## Contribution Guidelines
+
+### Workflow
 Before committing, be sure to:
  1. Use [Git Flow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow)
  2. [Sign your commits](https://git-scm.com/book/ms/v2/Git-Tools-Signing-Your-Work)
  3. Run `gofmt -s -w .\'
 
-## Versioning
+### Commit Messages
+The rules of [conventional commit messages](https://www.conventionalcommits.org/en/v1.0.0-beta.2/) should be observed.
+Observe to keep the first line of the commit message down to 50 characters and insert hard line-breaks at 72 characters
+for the rest of the message body.
 
+When working on `feature` or `hotfix` branches, the rules can be relaxed a bit. PRs should only be opened from your 
+`develop` branch, and when wrapping up your `feature` branches, you should squash your commits.
+
+#### Tags
+  - fix&mdash;for bugfixes
+  - feat&mdash;for any new functionality
+  - BREAKING CHANGE&mdash;annotation in the commit message body for any changes that will affect backwards-compatability.
+  - refactor&mdash;for reworked code that ends up being functionally the same
+  - docs&mdash;for changes to docstrings, CHANGELOG.md, this README, etc.
+  - chore&mdash;for changes to the repo that don't affect functional code or
+    docs (i.e. Makefiles, Dockerfiles, etc.)
+    
+## Versioning
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+Changes from version to version are tracked in [CHANGELOG.md](CHANGELOG.md).
 
 ## Authors
 
