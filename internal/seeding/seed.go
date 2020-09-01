@@ -1,4 +1,4 @@
-package database
+package seeding
 
 import (
 	"encoding/hex"
@@ -7,6 +7,7 @@ import (
 	"github.com/romanyx/polluter"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"github.com/weblair/lair/internal/database"
 	"golang.org/x/crypto/bcrypt"
 	"io/ioutil"
 	"regexp"
@@ -54,7 +55,7 @@ func processMacros(raw []byte) string {
 
 // SeedDatabase parses the seed YAML file for the given environment and populates the associated database.
 func SeedDatabase(env string) {
-	db, err := NewConnectionFromConfig()
+	db, err := database.NewConnectionFromConfig()
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
 			"environment": env,

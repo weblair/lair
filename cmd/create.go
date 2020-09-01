@@ -4,6 +4,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/weblair/lair/internal/config"
 	"github.com/weblair/lair/internal/database"
+	"github.com/weblair/lair/internal/migrations"
+	"github.com/weblair/lair/internal/seeding"
 )
 
 var forceCreate bool
@@ -18,8 +20,8 @@ var createCmd = &cobra.Command{
 		config.LoadEnvConfig(environment)
 		database.CreateDatabaseFromConfig(forceCreate)
 		if createAndSeed {
-			database.MigrateDatabase(0)
-			database.SeedDatabase(environment)
+			migrations.MigrateDatabase(0)
+			seeding.SeedDatabase(environment)
 		}
 	},
 }
