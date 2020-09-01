@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
-- Generating seed YAML files from an Excel workbook
 
 ### Changed
 
@@ -18,6 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Security
+
+## 0.5.0
+
+### Added
+- Generating seed YAML files from an Excel workbook
 
 ## 0.4.1
 
