@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## 0.4.0
+
+### Added
 - Migrations directory now a config value
 - Seed directory now a config value
 - Loglevel can now be set in the config
@@ -15,14 +29,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Refactored files into a more standard project layout
 
-### Deprecated
-
 ### Removed
 - Root configuration
-
-### Fixed
-
-### Security
 
 ## 0.3.2
 
