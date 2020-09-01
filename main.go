@@ -5,12 +5,14 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/weblair/lair/cmd"
-	_ "github.com/weblair/lair/config"
+	_ "github.com/weblair/lair/internal/config"
 )
+
+// TODO: Develop a test suite
 
 // BaseVersion is the SemVer-formatted string that defines the current version of Lair.
 // Build information will be added at compile-time.
-const BaseVersion = "0.3.2"
+const BaseVersion = "0.4.0"
 
 // BuildTime is a timestamp of when the build is run. This variable is set at compile-time.
 var BuildTime string

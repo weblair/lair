@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/weblair/lair/config"
-	"github.com/weblair/lair/db"
+	"github.com/weblair/lair/internal/config"
+	"github.com/weblair/lair/internal/database"
 )
 
 // dropCmd represents the drop command
@@ -13,7 +13,7 @@ var dropCmd = &cobra.Command{
 	Long:  "",
 	Run: func(cmd *cobra.Command, args []string) {
 		config.LoadEnvConfig(environment)
-		db.DropDatabaseFromConfig()
+		database.DropDatabaseFromConfig()
 	},
 }
 

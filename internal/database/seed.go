@@ -1,4 +1,4 @@
-package db
+package database
 
 import (
 	"encoding/hex"
@@ -6,6 +6,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/romanyx/polluter"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"golang.org/x/crypto/bcrypt"
 	"io/ioutil"
 	"regexp"
@@ -66,7 +67,7 @@ func SeedDatabase(env string) {
 	}).Info("Reading seed data for environment.")
 
 	p := polluter.New(polluter.PostgresEngine(db))
-	data := fmt.Sprintf("db/seed/%s.yml", env)
+	data := fmt.Sprintf("%s/%s.yml", viper.GetString("SEED_DIRECTORY"),  env)
 
 	raw, err := ioutil.ReadFile(data)
 	if err != nil {

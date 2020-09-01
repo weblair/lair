@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/weblair/lair/config"
-	"github.com/weblair/lair/db"
+	"github.com/weblair/lair/internal/config"
+	"github.com/weblair/lair/internal/database"
 )
 
 // resetAndSeed is the flag that indicates seeding should take place after resetting
@@ -16,10 +16,10 @@ var resetCmd = &cobra.Command{
 	Long:  "",
 	Run: func(cmd *cobra.Command, args []string) {
 		config.LoadEnvConfig(environment)
-		db.CreateDatabaseFromConfig(true)
-		db.MigrateDatabase(0)
+		database.CreateDatabaseFromConfig(true)
+		database.MigrateDatabase(0)
 		if resetAndSeed {
-			db.SeedDatabase(environment)
+			database.SeedDatabase(environment)
 		}
 	},
 }
