@@ -1,7 +1,8 @@
-package database
+package migrations
 
 import (
 	"fmt"
+	"github.com/weblair/lair/internal/database"
 	"io/ioutil"
 	"strconv"
 	"strings"
@@ -16,7 +17,7 @@ import (
 )
 
 func newMigration() (*migrate.Migrate, error) {
-	db, err := NewConnectionFromConfig()
+	db, err := database.NewConnectionFromConfig()
 	if err != nil {
 		return nil, errors.WithMessage(err, "failed to connect to database")
 	}

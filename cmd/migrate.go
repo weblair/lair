@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/weblair/lair/internal/config"
-	"github.com/weblair/lair/internal/database"
+	"github.com/weblair/lair/internal/migrations"
 )
 
 // migrateSteps indicates how many migration steps up or down should be run against the database.
@@ -16,29 +16,29 @@ var migrateCmd = &cobra.Command{
 	Long:  "",
 	Run: func(cmd *cobra.Command, args []string) {
 		config.LoadEnvConfig(environment)
-		database.MigrateDatabase(migrateSteps)
+		migrations.MigrateDatabase(migrateSteps)
 	},
 }
 
-// migrateCmd is invoked when the user types 'lair migrate current'.
+// migrateCurrentCmd is invoked when the user types 'lair migrate current'.
 var migrateCurrentCmd = &cobra.Command{
 	Use:   "current",
 	Short: "Print the current database version",
 	Long:  "",
 	Run: func(cmd *cobra.Command, args []string) {
 		config.LoadEnvConfig(environment)
-		database.GetDatabaseVersion(environment)
+		migrations.GetDatabaseVersion(environment)
 	},
 }
 
-// migrateCmd is invoked when the user types 'lair migrate new [new migration]'.
+// migrateNewCmd is invoked when the user types 'lair migrate new [new migration]'.
 var migrateNewCmd = &cobra.Command{
 	Use:   "new [description]",
 	Short: "Create a new database migration",
 	Long:  "",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		database.CreateNewMigrationFile(args[0])
+		migrations.CreateNewMigrationFile(args[0])
 	},
 }
 
