@@ -18,6 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## 0.4.1
+
+### Fixed
+- Creating new Migration file uses MIGRATIONS_DIRECTORY instead of hard-coded value
+
 ## 0.4.0
 
 ### Added

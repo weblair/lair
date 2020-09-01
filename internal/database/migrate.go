@@ -38,7 +38,7 @@ func newMigration() (*migrate.Migrate, error) {
 
 func CreateNewMigrationFile(desc string) {
 	// Get a sorted list of templates in the project migrations directory
-	f, err := ioutil.ReadDir("./database/migrations")
+	f, err := ioutil.ReadDir(fmt.Sprintf("./%s", viper.GetString("MIGRATIONS_DIRECTORY")))
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
 			"error": err,
@@ -68,8 +68,8 @@ func CreateNewMigrationFile(desc string) {
 	d := strings.ToLower(strings.Replace(desc, " ", "_", -1))
 
 	// Build the filenames for the up and down migrations
-	down := fmt.Sprintf("database/migrations/%06d_%s.down.sql", current+1, d)
-	up := fmt.Sprintf("database/migrations/%06d_%s.up.sql", current+1, d)
+	down := fmt.Sprintf("%s/%06d_%s.down.sql", viper.GetString("MIGRATIONS_DIRECTORY"), current+1, d)
+	up := fmt.Sprintf("%s/%06d_%s.up.sql", viper.GetString("MIGRATIONS_DIRECTORY"), current+1, d)
 
 	// Create the up and down migration templates
 	logrus.WithFields(logrus.Fields{
