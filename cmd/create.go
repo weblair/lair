@@ -2,9 +2,8 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-
-	"github.com/weblair/lair/config"
-	"github.com/weblair/lair/db"
+	"github.com/weblair/lair/internal/config"
+	"github.com/weblair/lair/internal/database"
 )
 
 var forceCreate bool
@@ -17,10 +16,10 @@ var createCmd = &cobra.Command{
 	Long: ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		config.LoadEnvConfig(environment)
-		db.CreateDatabaseFromConfig(forceCreate)
+		database.CreateDatabaseFromConfig(forceCreate)
 		if createAndSeed {
-			db.MigrateDatabase(0)
-			db.SeedDatabase(environment)
+			database.MigrateDatabase(0)
+			database.SeedDatabase(environment)
 		}
 	},
 }

@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/weblair/lair/config"
-	"github.com/weblair/lair/db"
+	"github.com/weblair/lair/internal/config"
+	"github.com/weblair/lair/internal/database"
 )
 
 // migrateSteps indicates how many migration steps up or down should be run against the database.
@@ -16,7 +16,7 @@ var migrateCmd = &cobra.Command{
 	Long:  "",
 	Run: func(cmd *cobra.Command, args []string) {
 		config.LoadEnvConfig(environment)
-		db.MigrateDatabase(migrateSteps)
+		database.MigrateDatabase(migrateSteps)
 	},
 }
 
@@ -27,7 +27,7 @@ var migrateCurrentCmd = &cobra.Command{
 	Long:  "",
 	Run: func(cmd *cobra.Command, args []string) {
 		config.LoadEnvConfig(environment)
-		db.GetDatabaseVersion(environment)
+		database.GetDatabaseVersion(environment)
 	},
 }
 
@@ -38,7 +38,7 @@ var migrateNewCmd = &cobra.Command{
 	Long:  "",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		db.CreateNewMigrationFile(args[0])
+		database.CreateNewMigrationFile(args[0])
 	},
 }
 

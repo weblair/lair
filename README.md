@@ -21,7 +21,7 @@
 Before committing, be sure to:
  1. Use [Git Flow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow)
  2. [Sign your commits](https://git-scm.com/book/ms/v2/Git-Tools-Signing-Your-Work)
- 3. Run `gofmt -s -w .\'
+ 3. Run `gofmt -s -w .`
 
 ### Commit Messages
 The rules of [conventional commit messages](https://www.conventionalcommits.org/en/v1.0.0-beta.2/) should be observed.

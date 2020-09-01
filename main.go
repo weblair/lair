@@ -5,8 +5,10 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/weblair/lair/cmd"
-	_ "github.com/weblair/lair/config"
+	_ "github.com/weblair/lair/internal/config"
 )
+
+// TODO: Develop a test suite
 
 // BaseVersion is the SemVer-formatted string that defines the current version of Lair.
 // Build information will be added at compile-time.

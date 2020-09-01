@@ -1,4 +1,4 @@
-package db
+package database
 
 import (
 	"fmt"
@@ -25,7 +25,7 @@ func newMigration() (*migrate.Migrate, error) {
 		return nil, errors.WithMessage(err, "could not get an instance driver")
 	}
 	migration, err := migrate.NewWithDatabaseInstance(
-		"file://database/migrations",
+		fmt.Sprintf("file://%s", viper.GetString("MIGRATIONS_DIRECTORY")),
 		"postgres",
 		driver,
 	)
