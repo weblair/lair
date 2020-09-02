@@ -12,7 +12,7 @@ import (
 
 // BaseVersion is the SemVer-formatted string that defines the current version of Lair.
 // Build information will be added at compile-time.
-const BaseVersion = "0.5.0"
+const BaseVersion = "0.5.2"
 
 // BuildTime is a timestamp of when the build is run. This variable is set at compile-time.
 var BuildTime string
