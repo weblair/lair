@@ -18,7 +18,12 @@ func getColumnNames(sheet *xlsx.Sheet) []string {
 	var columns []string
 
 	for i := 0; i < sheet.MaxCol; i++ {
-		columns = append(columns, sheet.Cell(0, i).Value)
+		col := sheet.Cell(0, i).Value
+		if col != "" {
+			columns = append(columns, col)
+		} else {
+			break
+		}
 	}
 
 	return columns
@@ -27,8 +32,21 @@ func getColumnNames(sheet *xlsx.Sheet) []string {
 func buildRecordMap(columns []string, row *xlsx.Row) map[string]string {
 	record := make(map[string]string)
 
-	for i, c := range columns {
-		record[c] = row.Cells[i].Value
+	if len(row.Cells) < len(columns) {
+		logrus.WithFields(logrus.Fields{
+			"row": row.Cells,
+			"cells": len(row.Cells),
+			"columns": len(columns),
+		}).Error("Row has fewer cells than columns.")
+
+		return nil
+	}
+
+	for i, col := range columns {
+		cell := row.Cells[i].Value
+		if cell != "" {
+			record[col] = row.Cells[i].Value
+		}
 	}
 
 	return record
@@ -37,10 +55,31 @@ func buildRecordMap(columns []string, row *xlsx.Row) map[string]string {
 func buildTableMap(sheet *xlsx.Sheet) []map[string]string {
 	cols := getColumnNames(sheet)
 
+	if len(cols) == 0 {
+		logrus.WithFields(logrus.Fields{
+			"sheet": sheet.Name,
+		}).Error("Sheet has no defined column names.")
+
+		return nil
+	}
+
 	var table []map[string]string
+	logrus.WithFields(logrus.Fields{
+		"columns": len(cols),
+		"names": cols,
+	}).Debug("Defined table columns retrieved.")
 
 	for i := 1; i < sheet.MaxRow; i++ {
-		table = append(table, buildRecordMap(cols, sheet.Row(i)))
+		if len(sheet.Row(i).Cells) == 0 {
+			continue
+		}
+		logrus.WithFields(logrus.Fields{
+			"row": sheet.Row(i).Cells,
+		}).Debug("Processing row")
+		record := buildRecordMap(cols, sheet.Row(i))
+		if len(record) != 0 {
+			table = append(table, record)
+		}
 	}
 
 	return table
@@ -53,10 +92,13 @@ func buildSeedMap(sheet *xlsx.File) []TableMap {
 		logrus.WithFields(logrus.Fields{
 			"sheet": s.Name,
 		}).Info("Processing sheet")
-		seed = append(seed, TableMap{
-			s.Name,
-			buildTableMap(s),
-		})
+		objects := buildTableMap(s)
+		if objects != nil {
+			seed = append(seed, TableMap{
+				s.Name,
+				objects,
+			})
+		}
 	}
 
 	return seed
@@ -94,18 +136,30 @@ func GenerateSeedFile(env string, filename string) {
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
 			"environment": env,
-			"filename":    filename,
+			"workbook":    filename,
 			"error":       err,
 		}).Fatal("Failed to open Excel workbook.")
 	}
 
 	seed := buildSeedMap(workbook)
+	if seed == nil {
+		logrus.WithFields(logrus.Fields{
+			"environment": env,
+			"workbook": filename,
+		}).Fatal("Workbook does not have any valid tables.")
+	}
 
 	if err := writeSeedFile(seed, env); err != nil {
 		logrus.WithFields(logrus.Fields{
 			"environment": env,
-			"filename":    filename,
+			"workbook":    filename,
 			"error":       err,
 		}).Fatal("Failed to write seed file.")
+	} else {
+		logrus.WithFields(logrus.Fields{
+			"environment": env,
+			"workbook":    filename,
+			"output_file": fmt.Sprintf("%s/%s.yml", viper.GetString("SEED_DIRECTORY"), env),
+		}).Info("Seed file written.")
 	}
 }
