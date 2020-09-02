@@ -18,6 +18,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## 0.5.1
+
+### Added
+- Some extra logging messages
+
+### Fixed
+- An empty column heading will terminate column name processing
+- Empty rows are ignored
+- Empty cells in otherwise valid rows are completely left out of table entries (so they get inserted as nulls or 
+  defaults when the database is seeded)
+- Setting `LOGLEVEL` environment variable actually affects loglevel
+
 ## 0.5.0
 
 ### Added

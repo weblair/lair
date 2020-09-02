@@ -30,9 +30,6 @@ func initLogging() error {
 // LoadEnvConfig will load the given environment from its corresponding YAML config file.
 // Use this to override the default environment that is loaded from the .env file.
 func LoadEnvConfig(env string) {
-	_ = gotenv.Load()
-	viper.AutomaticEnv()
-
 	viper.AddConfigPath("./config")
 	viper.SetConfigName(env)
 
@@ -61,6 +58,9 @@ func init() {
 	viper.SetDefault("MIGRATIONS_DIRECTORY", "migrations")
 	viper.SetDefault("SEED_DIRECTORY", "seed")
 	viper.SetDefault("LOGLEVEL", "info")
+
+	_ = gotenv.Load()
+	viper.AutomaticEnv()
 
 	if err := initLogging(); err != nil {
 		logrus.WithFields(logrus.Fields{
