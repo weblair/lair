@@ -18,6 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## 0.5.2
+
+### Fixed
+- Bumped version number in the `version` command
+
 ## 0.5.1
 
 ### Added
