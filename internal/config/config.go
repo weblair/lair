@@ -7,7 +7,7 @@ import (
 	"github.com/subosito/gotenv"
 )
 
-func initLogging() error {
+func InitLogging() error {
 	// Valid log levels are:
 	//	- panic
 	//	- fatal
@@ -31,6 +31,7 @@ func initLogging() error {
 // Use this to override the default environment that is loaded from the .env file.
 func LoadEnvConfig(env string) {
 	viper.AddConfigPath("./config")
+	viper.AddConfigPath("../config")
 	viper.SetConfigName(env)
 
 	if err := viper.ReadInConfig(); err != nil {
@@ -57,14 +58,8 @@ func init() {
 	viper.SetDefault("DB_PASSWORD", "postgres")
 	viper.SetDefault("MIGRATIONS_DIRECTORY", "migrations")
 	viper.SetDefault("SEED_DIRECTORY", "seed")
-	viper.SetDefault("LOGLEVEL", "info")
 
 	_ = gotenv.Load()
 	viper.AutomaticEnv()
 
-	if err := initLogging(); err != nil {
-		logrus.WithFields(logrus.Fields{
-			"error": err,
-		}).Fatal("Failed to initialize logger.")
-	}
 }
