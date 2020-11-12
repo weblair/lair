@@ -2,7 +2,6 @@ package controller
 
 import (
 	"errors"
-	"fmt"
 	"github.com/weblair/lair/pkg/model"
 	"net/http"
 	"reflect"
@@ -29,7 +28,7 @@ func CreateRecord(ctx *gin.Context, ctl Controller) {
 		"controller":      reflect.TypeOf(ctl).String(),
 	}).Info("Attempting to create new record in database")
 
-	ri := getControllerResourceInfo(ctl.ResourceModel())
+	ri := model.GetResourceModelInfo(ctl.ResourceModel())
 	r := reflect.New(ri.ResourceType)
 
 	err := ctx.Bind(r)
@@ -37,7 +36,10 @@ func CreateRecord(ctx *gin.Context, ctl Controller) {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"error": "request body is malformed",
 		})
+		return
 	}
+
+	ctx.JSON(http.StatusCreated, gin.H{})
 }
 
 // ListRecords uses reflection to fetch a list of model instances from the database.

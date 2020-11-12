@@ -29,10 +29,12 @@ type Database struct {
 	DB *gorm.DB
 }
 
-func (db Database) List(model *[]model.Model) error {
-	db.DB.Find(model)
-
+func (db Database) Create(model *model.Model) error {
 	return nil
+}
+
+func (db Database) List(model *[]model.Model) {
+	db.DB.Find(model)
 }
 
 func (db Database) Fetch(model *model.Model, pName string, pValue interface{}, preload []string) error {
