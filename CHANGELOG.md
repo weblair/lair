@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
+- CLI flag to set loglevel
+- Searching for environment config in either `./config` or `../config`
 
 ### Changed
 
@@ -17,6 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Security
+
+## 0.5.3
+
+### Added
+- CLI flag to set loglevel
+- Searching for environment config in either `./config` or `../config`
 
 ## 0.5.2
 
