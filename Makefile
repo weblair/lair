@@ -11,7 +11,7 @@ LDFLAGS = -ldflags "-s -X main.BuildTime=${BUILD_TIME} -X main.GitRevision=${GIT
 
 lair: main.go $(foreach f, $(SRC), $(f).go)
 	-@mkdir ./bin || true
-	go build ${LDFLAGS} -o ./bin/lair
+	go build ${LDFLAGS} -mod vendor -o ./bin/lair
 
 .PHONY: install
 install: lair
