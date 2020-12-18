@@ -2,11 +2,6 @@ package migrations
 
 import (
 	"fmt"
-	"github.com/weblair/lair/internal/database"
-	"io/ioutil"
-	"strconv"
-	"strings"
-
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
@@ -14,6 +9,11 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"io/ioutil"
+	"strconv"
+	"strings"
+
+	"github.com/weblair/lair/internal/database"
 )
 
 func newMigration() (*migrate.Migrate, error) {
@@ -132,11 +132,18 @@ func MigrateDatabase(steps int) {
 			"database": viper.GetString("DB_NAME"),
 		}).Info("Migrating database to latest version.")
 		if err := migration.Up(); err != nil {
-			logrus.WithFields(logrus.Fields{
-				"database": viper.GetString("DB_NAME"),
-				"steps":       steps,
-				"error":       errors.WithStack(err),
-			}).Fatal("Database migration failed.")
+			if err.Error() == "no change" {
+				logrus.WithFields(logrus.Fields{
+					"database": viper.GetString("DB_NAME"),
+					"steps": steps,
+				}).Info("Database already at latest version.")
+			} else {
+				logrus.WithFields(logrus.Fields{
+					"database": viper.GetString("DB_NAME"),
+					"steps":    steps,
+					"error":    errors.WithStack(err),
+				}).Fatal("Database migration failed.")
+			}
 		}
 	} else {
 		logrus.WithFields(logrus.Fields{
@@ -144,11 +151,18 @@ func MigrateDatabase(steps int) {
 			"steps":       steps,
 		}).Info("Performing step-wise migration on database.")
 		if err := migration.Steps(steps); err != nil {
-			logrus.WithFields(logrus.Fields{
-				"database": viper.GetString("DB_NAME"),
-				"steps":       steps,
-				"error":       errors.WithStack(err),
-			}).Fatal("Database migration failed.")
+			if err.Error() == "no change" {
+				logrus.WithFields(logrus.Fields{
+					"database": viper.GetString("DB_NAME"),
+					"steps":    steps,
+				}).Info("No changes to be made to database.")
+			} else {
+				logrus.WithFields(logrus.Fields{
+					"database": viper.GetString("DB_NAME"),
+					"steps":    steps,
+					"error":    errors.WithStack(err),
+				}).Fatal("Database migration failed.")
+			}
 		}
 	}
 }

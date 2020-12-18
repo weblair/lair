@@ -1,11 +1,28 @@
-FROM golang:1.15-alpine
-WORKDIR /go/src/github.com/weblair/lair
+FROM postgres:12
+WORKDIR /root/go/src/github.com/weblair/lair
 
-RUN apk add git make docker-cli bash openssh-client
+# Setup
+RUN apt update
+RUN yes | apt install wget git make
+RUN mkdir -p /usr/local
 
+# Setup Postgres
+RUN echo "postgres" > /pgpw
+RUN chown postgres:postgres /pgpw
+RUN pg_createcluster 12 lair --start -- --auth=password --pwfile=/pgpw
+RUN rm /pgpw
+
+# Install Go
+RUN wget https://golang.org/dl/go1.15.6.linux-amd64.tar.gz
+RUN tar -C /usr/local -xzf go1.15.6.linux-amd64.tar.gz
+RUN rm go1.15.6.linux-amd64.tar.gz
+ENV PATH $PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin
+
+# Install Lair
 COPY ./ ./
 RUN make clean
 RUN make
 RUN make install
 
 CMD ["bash"]
+
