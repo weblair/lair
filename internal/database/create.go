@@ -11,11 +11,8 @@ import (
 // TODO: Add debug logging to create.go
 
 // CreateDatabaseWithName will create a new Postgres database with the given name.
-// This function assumes the following: <-- OUTDATED
-//   1. That the postgres user exists
-//   2. That the postgres database exists
-//   3. That Postgres is configured to accept local connections with the 'password' method
-//   4. That the postgres user's password is 'postgres'
+// This function will drop the database using the creds in the config under ROOT_DB_HOST, ROOT_DB_NAME, ROOT_DB_USER,
+// and ROOT_DB_PASSWORD.
 func CreateDatabaseWithName(name string, force bool) error {
 	params := ConnectionParams{
 		Host:     viper.GetString("ROOT_DB_HOST"),
@@ -29,10 +26,15 @@ func CreateDatabaseWithName(name string, force bool) error {
 		return errors.WithMessage(err, "failed to connect to root postgres database")
 	}
 
-	// FIXME: create --force should not throw an error if the DB does not already exist.
 	if force {
 		if err := DropDatabaseWithName(name); err != nil {
-			return errors.WithMessagef(err, "could not drop existing database %s", name)
+			if strings.Contains(err.Error(), "does not exist") {
+				logrus.WithFields(logrus.Fields{
+					"database": viper.GetString("DB_NAME"),
+				}).Warn("Not dropping database because it does not exist.")
+			} else {
+				return errors.WithMessagef(err, "could not drop existing database %s", name)
+			}
 		}
 	}
 	if _, err := db.Exec(fmt.Sprintf("CREATE DATABASE %s;", name)); err != nil {
