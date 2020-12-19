@@ -3,7 +3,7 @@ WORKDIR /root/go/src/github.com/weblair/lair
 
 # Setup
 RUN apt update
-RUN yes | apt install wget git make
+RUN apt install -y wget git make gcc
 RUN mkdir -p /usr/local
 
 # Setup Postgres
@@ -25,4 +25,3 @@ RUN make
 RUN make install
 
 CMD ["bash"]
-
