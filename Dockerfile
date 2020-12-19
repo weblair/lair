@@ -9,7 +9,7 @@ RUN mkdir -p /usr/local
 # Setup Postgres
 RUN echo "postgres" > /pgpw
 RUN chown postgres:postgres /pgpw
-RUN pg_createcluster 12 lair --start -- --auth=password --pwfile=/pgpw
+RUN pg_createcluster 12 lair -- --auth=password --pwfile=/pgpw
 RUN rm /pgpw
 
 # Install Go
