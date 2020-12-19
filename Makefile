@@ -18,6 +18,11 @@ install: lair
 	-@rm ${GOPATH}/bin/lair || true
 	cp ./bin/lair ${GOPATH}/bin/
 
+.PHONY: docker-install
+docker-install: lair
+	-@rm ${GOPATH}/bin/lair || true
+	cp ./bin/lair /usr/local/bin/
+
 .PHONY: clean
 clean:
 	-rm ./bin/lair

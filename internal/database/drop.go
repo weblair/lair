@@ -9,11 +9,8 @@ import (
 )
 
 // DropDatabaseWithName will drop the Postgres database with the given name.
-// This function assumes the following:
-//   1. That the postgres user exists
-//   2. That the postgres database exists
-//   3. That Postgres is configured to accept local connections with the 'password' method
-//   4. That the postgres user's password is 'postgres'
+// This function will drop the database using the creds in the config under ROOT_DB_HOST, ROOT_DB_NAME, ROOT_DB_USER,
+// and ROOT_DB_PASSWORD.
 func DropDatabaseWithName(name string) error {
 	params := ConnectionParams{
 		Host:     viper.GetString("ROOT_DB_HOST"),

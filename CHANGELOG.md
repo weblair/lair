@@ -15,8 +15,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 ### Fixed
+- Resetting and force-creating over databases that don't exist does not throw an error.
+- Migrating a database that is already at the latest version does not throw an error.
 
 ### Security
+
+## 0.5.4
+
+### Fixed
+- Resetting and force-creating over databases that don't exist does not throw an error.
+- Migrating a database that is already at the latest version does not throw an error.
 
 ## 0.5.3
 
