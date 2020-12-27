@@ -3,7 +3,7 @@ WORKDIR /root/go/src/github.com/weblair/lair
 
 # Setup
 RUN apt update
-RUN apt install -y wget git make gcc
+RUN apt install -y wget git make gcc python3 python3-pip
 RUN mkdir -p /usr/local
 
 # Setup Postgres
@@ -16,7 +16,7 @@ RUN rm /pgpw
 RUN wget https://golang.org/dl/go1.15.6.linux-amd64.tar.gz
 RUN tar -C /usr/local -xzf go1.15.6.linux-amd64.tar.gz
 RUN rm go1.15.6.linux-amd64.tar.gz
-ENV PATH $PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin
+ENV PATH $PATH:/root/.local/bin:/usr/local/go/bin
 
 # Install Lair
 COPY ./ ./

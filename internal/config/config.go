@@ -30,6 +30,20 @@ func InitLogging() error {
 // LoadEnvConfig will load the given environment from its corresponding YAML config file.
 // Use this to override the default environment that is loaded from the .env file.
 func LoadEnvConfig(env string) {
+	var dbHost, dbUser, dbName, dbPassword string
+	if viper.GetString("DB_HOST") != "localhost" {
+		dbHost = viper.GetString("DB_HOST")
+	}
+	if viper.GetString("DB_USER") != "postgres" {
+		dbUser = viper.GetString("DB_USER")
+	}
+	if viper.GetString("DB_NAME") != "" {
+		dbName = viper.GetString("DB_NAME")
+	}
+	if viper.GetString("DB_PASSWORD") != "postgres" {
+		dbPassword = viper.GetString("DB_PASSWORD")
+	}
+
 	viper.AddConfigPath("./config")
 	viper.AddConfigPath("../config")
 	viper.SetConfigName(env)
@@ -41,6 +55,19 @@ func LoadEnvConfig(env string) {
 				"error":       errors.WithStack(err),
 			}).Fatal("Failed to read configuration file.")
 		}
+	}
+
+	if dbHost != "" {
+		viper.Set("DB_HOST", dbHost)
+	}
+	if dbUser != "" {
+		viper.Set("DB_USER", dbUser)
+	}
+	if dbName != "" {
+		viper.Set("DB_NAME", dbName)
+	}
+	if dbPassword != "" {
+		viper.Set("DB_PASSWORD", dbPassword)
 	}
 }
 

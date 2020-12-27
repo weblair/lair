@@ -20,6 +20,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+## 0.5.5
+
+### Fixed
+- Setting environment variables will take precedence over environment configs.
+
 ## 0.5.4
 
 ### Fixed
