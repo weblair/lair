@@ -16,7 +16,7 @@ RUN rm /pgpw
 RUN wget https://golang.org/dl/go1.15.6.linux-amd64.tar.gz
 RUN tar -C /usr/local -xzf go1.15.6.linux-amd64.tar.gz
 RUN rm go1.15.6.linux-amd64.tar.gz
-ENV PATH $PATH:/root/.local/bin:/usr/local/go/bin
+ENV PATH $PATH:/root/.local/bin:/usr/local/go/bin:/root/go/bin
 
 # Install Lair
 COPY ./ ./

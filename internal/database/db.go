@@ -28,6 +28,7 @@ func (c ConnectionParams) String() string {
 	)
 }
 
+// TODO: Remove password from logs
 // NewConnectionFromParams creates a new database connection from the given parameters.
 func NewConnectionFromParams(c ConnectionParams) (*sql.DB, error) {
 	logrus.WithFields(logrus.Fields{
